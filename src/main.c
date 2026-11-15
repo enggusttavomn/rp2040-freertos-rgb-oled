@@ -13,6 +13,7 @@ Este projeto implementa 4 tarefas que trabalham juntas:
 #include "queue.h"
 #include "event_groups.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
@@ -75,12 +76,12 @@ void init_gpios(void) {
 }
 
 // Função para inicializar display OLED
-void init_display(void) {
+bool init_display(void) {
     // Aloca buffer para o display (ssd1306_buffer_length está definido em ssd1306_i2c.h)
     ssd1306_buffer = (uint8_t*) calloc(ssd1306_buffer_length, sizeof(uint8_t));
     if (ssd1306_buffer == NULL) {
         printf("Erro: Falha ao alocar buffer do display!\n");
-        return;
+        return false;
     }
     
     // Inicialização do I2C para comunicação com o display OLED (mesma ordem do exemplo)
@@ -109,6 +110,7 @@ void init_display(void) {
     
     // Atualiza display completo
     render_on_display(ssd1306_buffer, &frame_area);
+    return true;
 }
 
 // Tarefa 1: Lê o estado do botão e envia sinais via Event Group
@@ -340,7 +342,10 @@ int main() {
     
     // Inicializa hardware
     init_gpios();
-    init_display();
+    if (!init_display()) {
+        /* Do not schedule tasks that would dereference a missing framebuffer. */
+        while (1) { tight_loop_contents(); }
+    }
     
     // Cria as tarefas
     // Nota: Tarefa 4 criada antes da Tarefa 3 para estar pronta para receber dados da Queue

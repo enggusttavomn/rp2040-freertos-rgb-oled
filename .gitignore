@@ -1,4 +1,14 @@
 build
+build-*/
+cmake-build-*/
+CMakeUserPresets.json
+compile_commands.json
+*.uf2
+*.elf
+*.bin
+.env
+.env.*
+!.env.example
 !.vscode/*
 doxygenhtml/
 latex/

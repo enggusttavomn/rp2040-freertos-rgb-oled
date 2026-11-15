@@ -1,4 +1,4 @@
-# Controle RGB e OLED com FreeRTOS — RP2040
+# Controle multitarefa de LED RGB e OLED
 
 Um sistema completo de controle de LED RGB e display OLED implementado para o
 microcontrolador Raspberry Pi Pico utilizando FreeRTOS, com comunicação entre tarefas
@@ -60,7 +60,7 @@ O sistema utiliza o FreeRTOS com as seguintes características:
 - **Event Group**: 3 bits (BUTTON_ON_BIT_1, BUTTON_ON_BIT_2, BUTTON_OFF_BIT)
 - **Queue**: 5 elementos de 10 bytes cada (strings até 9 caracteres + NULL)
 - **Mutex**: Proteção de acesso exclusivo ao display OLED
-- **Tarefas**: 4 tarefas independentes com diferentes prioridades
+- **Tarefas**: 4 tarefas independentes, todas com prioridade 1
 - **Timeout de Queue**: 100ms para envio de mensagens (`pdMS_TO_TICKS(100)`)
 - **Timeout de Event Group**: Indefinido (`portMAX_DELAY`) para tarefa de leitura de cor
 
@@ -292,7 +292,7 @@ Foram conduzidos os seguintes procedimentos de teste para validar o funcionament
 ### **Teste das Tarefas FreeRTOS**
 - Verificação da criação e inicialização das 4 tarefas
 - Validação da execução concorrente e trocas de contexto
-- Teste de prioridades e escalonamento de tarefas
+- Verificação do escalonamento das quatro tarefas de mesma prioridade
 
 ### **Teste do Event Group**
 - Validação do set de bits quando botão é pressionado (BUTTON_ON_BIT_1 e BUTTON_ON_BIT_2)
